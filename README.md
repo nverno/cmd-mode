@@ -10,16 +10,14 @@ for most of the builtin commands.
 To use cmd-mode instead of bat-mode (assuming it is in your
 load-path), you can add 
 
-<pre><code>
-
+```lisp
 (defalias 'bat-mode 'cmd-mode)
-
-<pre><code>
+```
 
 to your init file, or manually load it for specific file types.  
 To enable company support,
 
-<pre><code>
+```lisp
 ;; optional if in load-path
 (require company-cmd)
 
@@ -31,10 +29,8 @@ To enable company support,
 
 ;; or something like the following in the hook
 (push '(company-capf :with company-bat) company-backends)
-
 ;; instead, which is similar to what I use in my init.
-
-<pre><code>
+```
 
 # example
-![example][test-cmd.png]
+![example](/test-cmd.png)
