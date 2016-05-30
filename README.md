@@ -35,3 +35,6 @@ To enable company support,
 ;; instead, which is similar to what I use in my init.
 
 <pre><code>
+
+# example
+![example][test-cmd.png]
