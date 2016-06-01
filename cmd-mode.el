@@ -213,7 +213,7 @@ starts at the end of the first \\(grouping\\)."
   (syntax-propertize-rules
    ("^[ \t]*\\(?:\\(@?r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
    ;; try to treat keywords after echo as words until something
-   ("\\(?:\\<@?echo\\_>\\)\\(?1:[^(&|><\"\n\r]*\\)" (1 "w"))))
+   ("\\(?:\\<@?echo\\_>\\)\\(?1:[^)(&|><\"\n\r]*\\)" (1 "w"))))
 
 (defun cmd-font-lock-keywords ()
   "Function to get simple fontification for `cmd-font-lock-keywords'.
@@ -330,7 +330,9 @@ be a variable name, it usually isn't."
        ((and (eq (char-before) ?:)
              (eq (char-before (1- (point))) ? ))
         (list start end (cmd--labels)))
-       (t (list start end #'cmd--cmd-completion-table))))))
+       ;; (t nil
+       ;;    (list start end #'cmd--cmd-completion-table))
+       ))))
 
 
 ;; Indentation
@@ -348,8 +350,6 @@ be a variable name, it usually isn't."
     (`(:elem . args) 0)
     (`(:before . "(")
      (smie-rule-parent))
-    (`(:after . ")")
-     `(column . ,(current-column)))
     (`(:list-intro . ,(or `"\n" `"")) t)))
 
 (defun cmd-smie--forward-token ()
