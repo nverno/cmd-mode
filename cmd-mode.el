@@ -180,7 +180,7 @@ starts at the end of the first \\(grouping\\)."
     ("%%\\(~\\(?:[$[:alpha:]]*:\\)?\\)?\\([[:alnum:]]+\\)"
      (1 font-lock-type-face prepend t)
      (2 font-lock-variable-name-face prepend))
-    ("[^%]%\\([^\n\r%=]+\\)%"
+    ("\\(?:[^%]\\|^\\)%\\([^\n\r%=]+\\)%"
      (1 font-lock-variable-name-face prepend))
     ("[^%]%\\(~[[:alpha:]]*\\)?\\([[:digit:]]\\)"
      (1 font-lock-type-face prepend)
