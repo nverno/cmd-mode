@@ -168,7 +168,7 @@ starts at the end of the first \\(grouping\\)."
 
 (defvar cmd-font-lock-keywords-var
   '(;; labels
-    ("\\(?1:^:[^:].*\\).*\\|\\_<goto\\_>[ \t]+\\(?1::\\w+\\)" 1
+    ("\\(?1:^:[^:].*\\).*\\|\\_<goto\\_>[ \t]+\\(?1::?\\w+\\)" 1
      'cmd-label-face)
     ;; escaped newlines
     ("\\(^\\|[^^]\\)\\(\\^^\\)*\\(\\^\\)$" 3 'cmd-escaped-newline-face)
@@ -182,7 +182,7 @@ starts at the end of the first \\(grouping\\)."
      (2 font-lock-variable-name-face prepend))
     ("[^%]%\\([^\n\r%=]+\\)%"
      (1 font-lock-variable-name-face prepend))
-    ("[^%]%\\(~[[:alpha:]]*\\)\\([[:digit:]]\\)"
+    ("[^%]%\\(~[[:alpha:]]*\\)?\\([[:digit:]]\\)"
      (1 font-lock-type-face prepend)
      (2 font-lock-variable-name-face prepend))
     ;; delayed expansion
@@ -213,6 +213,7 @@ starts at the end of the first \\(grouping\\)."
   (syntax-propertize-rules
    ("^[ \t]*\\(?:\\(@?r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
    ;; try to treat keywords after echo as words until something
+   ;; @@FIXME: doesn't work that well
    ("\\(?:\\<@?echo\\_>\\)\\(?1:[^)(&|><\"\n\r]*\\)" (1 "w"))))
 
 (defun cmd-font-lock-keywords ()
@@ -241,6 +242,8 @@ This adds rules for comments and assignments."
     (modify-syntax-entry ?# "_" table)
     (modify-syntax-entry ?\} "_" table)
     (modify-syntax-entry ?\{ "_" table)
+    (modify-syntax-entry ?\[ "_" table)
+    (modify-syntax-entry ?\] "_" table)
     (modify-syntax-entry ?\( "()" table)
     (modify-syntax-entry ?\) ")(" table)
     ;; escapes, but not in all cases like b/w ""?
@@ -260,6 +263,10 @@ This adds rules for comments and assignments."
 
 ;; Completion
 
+(defun cmd--ignore-case (lst)
+  "Assume LST is already uppercase and append lowercase version."
+  (append (mapcar #'downcase lst) lst))
+
 (defun cmd--vars-before-point ()
   "Vars could really be named anything, even with quotes interspersed,
 just check for prior SET.  This drops a leading ^ or \", although that could
@@ -268,8 +275,8 @@ be a variable name, it usually isn't."
     (let ((vars ()))
       (while (re-search-backward
               "[Ss][Ee][Tt] +\\(?:/[aApP][\t ]+\\)?\\^?\"?\\([^= ]+\\)=" nil t)
-        (push (match-string 1) vars))
-      vars)))
+        (push (upcase (match-string 1)) vars))
+      (cmd--ignore-case vars))))
 
 (defun cmd--cmd-completion-table (string pred action)
   (let ((cmds
@@ -283,17 +290,20 @@ be a variable name, it usually isn't."
 
 (defun cmd--environment-vars ()
   "Environment variables from `process-environment'."
-  (mapcar (lambda (x)
-            (substring x 0 (string-match "=" x)))
-          process-environment))
+  (cmd--ignore-case
+   (append
+    (mapcar (lambda (x)
+              (upcase (substring x 0 (string-match "=" x))))
+            process-environment)
+    cmd-virtual-env-variables)))
 
 (defun cmd--labels ()
   (save-excursion
     (goto-char (point-min))
     (let ((vars ()))
       (while (re-search-forward "^:\\([^: \n\r]+\\)" nil t)
-        (push (match-string-no-properties 1) vars))
-      vars)))
+        (push (upcase (match-string-no-properties 1)) vars))
+      (cmd--ignore-case vars))))
 
 (defun cmd--for-vars ()
   (save-excursion
@@ -317,18 +327,18 @@ be a variable name, it usually isn't."
       (cond
        ((eq (char-before) ?%)
         (if (not (eq (char-before (1- (point))) ?%))
-            (let ((case-fold-search t))
-              (list start end (append (cmd--vars-before-point)
-                                      (cmd--environment-vars)
-                                      cmd-virtual-env-variables)))
+            (list start end (append (cmd--vars-before-point)
+                                    (cmd--environment-vars)))
           (list start end (cmd--for-vars))))
        ((and (eq (char-before) ?~)
              (eq (char-before (1- (point))) ?%))
         (list start end cmd-for-variable-modifiers))
        ((eq (char-before) ?!)
         (list start end (cmd--vars-before-point)))
-       ((and (eq (char-before) ?:)
-             (eq (char-before (1- (point))) ? ))
+       ((or (and (eq (char-before) ?:)
+                 (eq (char-before (1- (point))) ? ))
+            (looking-back "\\<\\(?:goto\\|GOTO\\)\\>"
+                          (line-beginning-position)))
         (list start end (cmd--labels)))
        ;; (t nil
        ;;    (list start end #'cmd--cmd-completion-table))
