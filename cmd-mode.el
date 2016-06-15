@@ -168,7 +168,7 @@ starts at the end of the first \\(grouping\\)."
 
 (defvar cmd-font-lock-keywords-var
   '(;; labels
-    ("\\(?1:^:[^:].*\\).*\\|\\_<goto\\_>[ \t]+\\(?1::?\\w+\\)" 1
+    ("\\(?1:^:[^:].*\\).*\\|\\(?:\\_<goto\\_>[ \t]+\\|\\<_call\\_>[ \t]+:\\)\\(?1::?\\w+\\)" 1
      'cmd-label-face)
     ;; escaped newlines
     ("\\(^\\|[^^]\\)\\(\\^^\\)*\\(\\^\\)$" 3 'cmd-escaped-newline-face)
