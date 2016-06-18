@@ -95,8 +95,7 @@ the candidates are all uppercase."
     (prefix (company-cmd-prefix))
     (meta (company-cmd-meta arg))
     (candidates (company-cmd-offer-candidates arg))
-    (doc-buffer (company-cmd-doc arg))
-    (sorted t)))
+    (doc-buffer (company-cmd-doc arg))))
 
 (provide 'company-cmd)
 
