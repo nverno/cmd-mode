@@ -6,6 +6,8 @@ elc = $(el:.el=.elc)
 # probably want to change location of autoloads
 autoloads = ../loaddefs.el
 
+.PHONY: all $(autoloads) clean
+
 all : $(autoloads) compile
 
 compile : $(elc)
@@ -17,6 +19,5 @@ $(autoloads):
 	$(emacs) --eval "(let ((generated-autoload-file (expand-file-name \"../loaddefs.el\")) \
 (backup-inhibited t)) (update-directory-autoloads \".\"))"
 
-.PHONY: clean
 clean:
 	$(RM) $(autoloads) $(elc)
