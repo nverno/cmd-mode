@@ -445,6 +445,19 @@ or symbol-at-point will be attempted before requesting input."
            (cmd (read-from-minibuffer "Help: " default nil nil default)))
       (browse-url (format "%s/%s.html" url (downcase cmd)))))
 
+(defun cmd-help-man (arg)
+  "Ask man for help."
+  (interactive
+   (list
+    (if current-prefix-arg
+        (read-from-minibuffer "Man: ")
+      (let ((word (thing-at-point 'sexp t)))
+        (when word
+          (replace-regexp-in-string "\\.\\(?:exe\\|bat\\|cmd\\)$" "" word))))))
+  (when arg
+    (with-output-to-temp-buffer "*man help*"
+      (call-process "man" nil "*man help*" t arg))))
+
 (defun cmd-compile (&optional args)
   "Run script and output in compilation buffer."
   (interactive "P")
