@@ -49,6 +49,7 @@
 
 (eval-when-compile
   (require 'comint))
+(require 'pcomplete)
 
 (autoload 'comint-completion-at-point "comint")
 (autoload 'comint-filename-completion "comint")
@@ -87,6 +88,7 @@
 
 (defcustom cmd-dynamic-complete-functions
   '(shell-command-completion
+    pcomplete-completions-at-point
     comint-filename-completion)
   "Functions for dynamic completion."
   :type '(repeat function)
@@ -344,6 +346,29 @@ be a variable name, it usually isn't."
        ;;    (list start end #'cmd--cmd-completion-table))
        ))))
 
+;;* pcomplete
+(defun pcomplete-parse-cmd-arguments ()
+  (let ((begin (skip-chars-backward "a-zA-Z \t"))
+        (end (point)) begins args)
+    (save-excursion
+      (goto-char begin)
+      (while (< (point) end)
+        (skip-chars-forward " \t")
+        (push (point) begins)
+        (let ((arg ()))
+          (while (looking-at
+                  (eval-when-compile "\\(:[^\s\t\n\\\"']+\\)"))
+            (goto-char (match-end 0))
+            (push (match-string 0) arg))
+          (push (mapconcat #'identity (nreverse arg) "") args)))
+      (cons (nreverse args) (nreverse begins)))))
+  
+;;;###autoload
+(defun pcomplete/cmd-mode/setlocal ()
+  (require 'pcomplete)
+  (pcomplete-here '("EnableExtensions" "EnableDelayedExpansion"
+                    "DisableDelayedExpansion")))
+
 
 ;; Indentation
 
@@ -415,7 +440,7 @@ be a variable name, it usually isn't."
   "Insert minimal batch file template."
   (interactive)
   (goto-char (point-min))
-  (insert "@echo off\nsetlocal enableextensions\n\n"))
+  (insert "@echo off\nsetlocal EnableExtensions\npushd \"~dp0\"\n\npopd\n:EOF"))
 
 (defun cmd-help  (&optional arg)
   "Show help output for command in other window in view-mode.  Command 
@@ -586,6 +611,10 @@ Navigate between sections using `imenu'.\n
   (setq-local comment-start-skip "\\(?:::+\\|rem \\)[ \t]*")
   (setq-local comint-dynamic-complete-functions
               cmd-dynamic-complete-functions)
+  (set (make-local-variable 'pcomplete-parse-arguments-function)
+       #'cmd--parse-pcomplete-arguments)
+  (set (make-local-variable 'pcomplete-command-completion-function)
+       #'pcomplete-default-completion-function)
   (add-hook 'completion-at-point-functions #'comint-completion-at-point nil t)
   (add-hook 'completion-at-point-functions
             #'cmd-completion-at-point-function nil t)
