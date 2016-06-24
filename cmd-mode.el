@@ -347,7 +347,7 @@ be a variable name, it usually isn't."
        ))))
 
 ;;* pcomplete
-(defun pcomplete-parse-cmd-arguments ()
+(defun cmd--parse-cmd-arguments ()
   (let ((begin (skip-chars-backward "a-zA-Z \t"))
         (end (point)) begins args)
     (save-excursion
