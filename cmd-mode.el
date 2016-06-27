@@ -415,7 +415,8 @@ be a variable name, it usually isn't."
   "Insert minimal batch file template."
   (interactive)
   (goto-char (point-min))
-  (insert "@echo off\nsetlocal EnableExtensions\npushd \"%~dp0\"\n\npopd\n:EOF"))
+  (insert "@echo off\nsetlocal EnableExtensions\npushd \"%~dp0\"\n\n:EOF\npopd")
+  (goto-char (line-beginning-position -1)))
 
 (defun cmd-help  (&optional arg)
   "Show help output for command in other window in view-mode.  Command 
