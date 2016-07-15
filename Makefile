@@ -1,23 +1,39 @@
 emacs ?= emacs
-emacs := $(emacs) --eval "(package-initialize)" --batch
+wget ?= wget
+batch = $(emacs) -batch \
+	--eval "(let ((default-directory (expand-file-name \".emacs.d/elpa\" \"~\"))) \
+		   (normal-top-level-add-subdirs-to-load-path))"
+
 el = $(wildcard *.el)
 elc = $(el:.el=.elc)
 
-# probably want to change location of autoloads
-autoloads = ../loaddefs.el
+auto=../loaddefs.el
+auto_flags= \
+	--eval "(let ((generated-autoload-file \
+                      (expand-file-name (unmsys--file-name \"$@\"))) \
+                      (backup-inhibited t) \
+                      (default-directory (expand-file-name \".emacs.d/elpa\" \"~\"))) \
+                   (normal-top-level-add-subdirs-to-load-path) \
+                   (update-directory-autoloads \".\"))"
 
-.PHONY: all $(autoloads) clean
-
-all : $(autoloads) compile
+.PHONY: $(auto) clean
+all: compile $(auto) README.md
 
 compile : $(elc)
-
 %.elc : %.el
-	$(emacs) -f batch-byte-compile $<
+	$(batch) -f batch-byte-compile $<
 
-$(autoloads):
-	$(emacs) --eval "(let ((generated-autoload-file (expand-file-name \"../loaddefs.el\")) \
-(backup-inhibited t)) (update-directory-autoloads \".\"))"
+$(auto):
+	$(emacs) -batch $(auto_flags)
+
+README.md: el2markdown.el $(el)
+	$(emacs) -batch -l $< $(el) -f el2markdown-write-readme
+	$(RM) $@~
+
+.INTERMEDIATE: el2markdown.el
+el2markdown.el:
+	$(wget) -q -O $@ "https://github.com/Lindydancer/el2markdown/raw/master/el2markdown.el"
 
 clean:
-	$(RM) $(autoloads) $(elc)
+	$(RM) *.elc *~
+

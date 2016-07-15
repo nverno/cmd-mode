@@ -1,43 +1,68 @@
-cmd-mode provides an extension to base bat-mode, a major mode for
-editing windows batch/dos/cmd scripts.  It provides some fundamental
-lacking features including indentation, additional syntax and
-font-locking, completion-at-point functions, basic interactive shell, 
-and some addition user functions.
+# cmd-mode - Major mode for editing DOS/Windows scripts
 
-Coupled with company-cmd, there is additional completion and 
-company help support for most of the builtin commands.
+*Version:* 1<br>
+*URL:* [http://github.com/nverno/cmd-mode](http://github.com/nverno/cmd-mode)<br>
 
-Additionally, see company-shell to get a company-backed help and
-completion support for other executables on your exec-path.  The
-completion-at-point functions here already will probably find the
-exectubles, but won't provide help via `man` and `whatis`.
+Extension of `bat-mode`, a major mode for editing DOS/Windows scripts
+(batch files).  This verison is extended to provide indentation,
+completion at point functions, extra syntax, user functions,
+basic interactive shell.
 
-# Setup
+See [company-cmd](http://github.com/nverno/company-cmd)
+for company autocompletion/quickhelp support.
 
-To use cmd-mode instead of bat-mode (assuming it is in your
-load-path), you can add 
+## Features include
+
+* Syntax highlighting
+* Indentation: using smie
+* Completion: completion-at-point for local/environment variables
+* Access DOS help pages
+* imenu/outline navigation
+* Compilation support / running scripts
+* Interactive shell modeled after sh-script.el, but needs work to be useful
+  at this point: newlines need to be stripped and %% converted to %.
+
+## The syntax groups for highlighting are
+
+Face                          Example
+cmd-label-face                :LABEL
+cmd-escaped-newline-face      ^
+font-lock-comment-face        rem
+font-lock-builtin-face        copy
+font-lock-keyword-face        goto
+font-lock-warning-face        cp
+font-lock-constant-face       [call] prog
+font-lock-variable-name-face  %var%
+font-lock-type-face           -option
+
+## Usage
+
+Just needs to be on the `load-path` and either explicitly required, or
+`cmd-mode` needs to be autoloaded.  In the init file, to use this mode
+instead of builtin `bat-mode`:
 
 ```lisp
 (defalias 'bat-mode 'cmd-mode)
 ```
 
-to your init file, or manually load it for specific file types.  
-To enable company support,
+See documentation of function `cmd-mode`.
+
+### Acknowledgements
+
+Extension of base bat-mode.el to include indentation, completion,
+modified syntax and font-locking, some extra user functions and basic
+interface for interactive shell.  Mostly modeled after sh-script.el
+
+Example using `company-cmd` with `company-capf` (completion-at-point),
+ie:
 
 ```lisp
-;; optional if in load-path
-(require 'company-cmd)
-
-;; add company-cmd to company-backends
-(add-hook 'cmd-mode-hook
-          #'(lambda ()
-              (make-local-variable 'company-backends)
-              (push 'company-cmd 'company-backends)))
-
-;; or something like the following in the hook
-(push '(company-capf :with company-cmd) company-backends)
-;; instead, which is similar to what I use in my init.
+'(company-capf :with company-cmd)
 ```
+as company-backend and `company-quickhelp` for dropdown help.
 
-# example
-![example](/test-cmd.png)
+![example](test-cmd.png)
+
+
+---
+Converted from `cmd-mode.el` by [*el2markdown*](https://github.com/Lindydancer/el2markdown).

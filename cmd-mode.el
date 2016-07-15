@@ -1,8 +1,10 @@
 ;;; cmd-mode.el --- Major mode for editing DOS/Windows scripts
 
-;; Original author: Arni Magnusson <arnima@hafro.is>
-;; This extension: Noah Peart <noah.v.peart@gmail.com>
+;; Authors: Original: Arni Magnusson <arnima@hafro.is>
+;;          This extension: Noah Peart <noah.v.peart@gmail.com>
 ;; Keywords: languages
+;; Version: 1
+;; URL: http://github.com/nverno/cmd-mode
 
 ;; This file is not part of GNU Emacs
 
@@ -13,16 +15,27 @@
 
 ;;; Commentary:
 ;;
-;; Extented version of base bat-mode, a major mode for editing
-;; DOS/Windows scripts (batch files).  This verison is extended to provide
-;; indentation, completion at point functions, extra syntax, user functions,
-;; basic interactive shell, and company completion with company-cmd.
-;; Features include,  highlighting, a basic template,
-;; access to DOS help pages, imenu/outline navigation, the ability to
-;; run scripts from within Emacs (also with output to compilation buffer),
+;; Extension of `bat-mode', a major mode for editing DOS/Windows scripts
+;; (batch files).  This verison is extended to provide indentation,
+;; completion at point functions, extra syntax, user functions,
+;; basic interactive shell.
+
+;; See [company-cmd](http://github.com/nverno/company-cmd)
+;; for company autocompletion/quickhelp support.
+
+;; Features include:
 ;;
-;; The syntax
-;; groups for highlighting are:
+;; * Syntax highlighting
+;; * Indentation: using smie
+;; * Completion: completion-at-point for local/environment variables
+;; * Access DOS help pages
+;; * imenu/outline navigation
+;; * Compilation support / running scripts
+;; * Interactive shell modeled after sh-script.el, but needs work to be useful
+;;   at this point: newlines need to be stripped and %% converted to %.
+
+
+;; The syntax groups for highlighting are:
 ;;
 ;; Face                          Example
 ;; cmd-label-face                :LABEL
@@ -34,8 +47,16 @@
 ;; font-lock-constant-face       [call] prog
 ;; font-lock-variable-name-face  %var%
 ;; font-lock-type-face           -option
-;;
+
 ;; Usage:
+;;
+;; Just needs to be on the `load-path' and either explicitly required, or
+;; `cmd-mode' needs to be autoloaded.  In the init file, to use this mode
+;; instead of builtin `bat-mode':
+;;
+;; ```lisp
+;; (defalias 'bat-mode 'cmd-mode)
+;; ```
 ;;
 ;; See documentation of function `cmd-mode'.
 ;;
@@ -44,6 +65,16 @@
 ;; Extension of base bat-mode.el to include indentation, completion,
 ;; modified syntax and font-locking, some extra user functions and basic
 ;; interface for interactive shell.  Mostly modeled after sh-script.el
+
+;; Example using `company-cmd' with `company-capf' (completion-at-point),
+;; ie:
+;;
+;; ```lisp
+;; '(company-capf :with company-cmd)
+;; ```
+;; as company-backend and `company-quickhelp' for dropdown help.
+;;
+;; ![example](test-cmd.png)
 
 ;;; Code:
 
