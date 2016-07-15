@@ -3,3 +3,4 @@
 .#*
 /.cask
 loaddefs.el
+*.html 

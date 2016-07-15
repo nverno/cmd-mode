@@ -37,17 +37,18 @@
 
 ;; The syntax groups for highlighting are:
 ;;
-;; Face                          Example
-;; cmd-label-face                :LABEL
-;; cmd-escaped-newline-face      ^
-;; font-lock-comment-face        rem
-;; font-lock-builtin-face        copy
-;; font-lock-keyword-face        goto
-;; font-lock-warning-face        cp
-;; font-lock-constant-face       [call] prog
-;; font-lock-variable-name-face  %var%
-;; font-lock-type-face           -option
-
+;;     ;; Face					Example
+;;     ;;
+;;     ;;  cmd-label-face				:LABEL
+;;     ;;  cmd-escaped-newline-face	    ^
+;;     ;;  font-lock-comment-face		rem
+;;     ;;  font-lock-builtin-face		copy
+;;     ;;  font-lock-keyword-face		goto
+;;     ;;  font-lock-warning-face		cp
+;;     ;;  font-lock-constant-face		[call] prog
+;;     ;;  font-lock-variable-name-face	%var%
+;;     ;;  font-lock-type-face			-option
+;;
 ;; Usage:
 ;;
 ;; Just needs to be on the `load-path' and either explicitly required, or
