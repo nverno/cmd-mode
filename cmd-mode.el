@@ -88,13 +88,9 @@
 (autoload 'shell-command-completion "shell")
 
 (defgroup cmd nil
-  "Windows cmd shell programming utilities."
-  :group 'languages)
-
-(defgroup cmd-script nil
-  "Major mode for editing DOS/Windows batch files."
+  "Major mode and programming utilities for editing DOS/Windows batch files."
   :link '(custom-group-link :tag "Font Lock Faces group" font-lock-faces)
-  :group 'cmd
+  :group 'languages
   :prefix "cmd-")
 
 
@@ -103,57 +99,57 @@
 (defcustom cmd-indent-level 4
   "Amount by which batch subexpressions are indented."
   :type 'integer
-  :group 'cmd-script)
+  :group 'cmd)
 (put 'cmd-indent-level 'safe-local-variable 'integerp)
 
 (defcustom cmd-shell-file
   (downcase (or (getenv "SHELL") "cmd.exe"))
   "The executable file name of the shell."
   :type 'string
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-compile-file cmd-shell-file
   "Shell used for compiling, default `cmd-shell-file'."
   :type 'string
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-dynamic-complete-functions
   '(shell-command-completion
     comint-filename-completion)
   "Functions for dynamic completion."
   :type '(repeat function)
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defface cmd-label-face
   '((t :inherit font-lock-warning-face :weight bold))
   "Font Lock mode face used to highlight labels in batch files."
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defface cmd-escaped-newline-face
   '((t :inherit font-lock-warning-face))
   "Face for (non-escaped) ^ at end of line."
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-assignment-regexp
   "\\_<set\\_> \\(?:/[aApP] \\)?[ \t]*\\^?\"?\\([^ =]+\\)="
   "Regexp to match variable name, the first grouping matches the 
 variable name"
   :type 'regexp
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-beginning-of-command
   "\\([(|&><]\\|[^\\^]\n\\)[ @\t]*\\([[:alpha:]]\\)"
   "Regexp to determine beginning of shell command.  The command starts
 at the beginning of the second \\(grouping\\)."
   :type 'regexp
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-end-of-command
   "\\([[:alpha:]]\\)[ \t]*\\([|&><]\\|$\\)"
   "Regexp to determine the end of a shell command. The actual command
 starts at the end of the first \\(grouping\\)."
   :type 'regexp
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-builtins
   '("assoc" "at" "attrib" "cd" "cls" "chdir" "color" "copy" "date" "del" "dir"
@@ -166,7 +162,7 @@ starts at the end of the first \\(grouping\\)."
   :type '(repeat (cons (symbol :tag "Shell")
                        (choice (repeat string))
                        (sexp :format "Evaluate: %v")))
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-control-keywords
   '("for" "in" "do" "if" "not" "else" "exist" "defined"
@@ -176,7 +172,7 @@ starts at the end of the first \\(grouping\\)."
   :type '(repeat (cons (symbol :tag "Shell")
                        (choice (repeat "string"))
                        (sexp :format "Evaluate: %v")))
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-unix-keywords
   '("bash" "cat" "cp" "fgrep" "grep" "ls" "sed" "sh" "mv" "rm")
@@ -184,7 +180,7 @@ starts at the end of the first \\(grouping\\)."
   :type '(repeat (cons (symbol :tag "Shell"))
                  (choice (repeat string)
                          (sexp :format "Evaluate: %v")))
-  :group 'cmd-script)
+  :group 'cmd)
 
 (defcustom cmd-virtual-env-variables
   '("CD" "DATE" "TIME" "RANDOM" "ERRORLEVEL" "CMDEXTVERSION"
@@ -193,7 +189,7 @@ starts at the end of the first \\(grouping\\)."
   :type '(repeat (cons (symbol :tag "Shell"))
                  (choice (repeat string)
                          (sexp :format "Evaluate: %v")))
-  :group 'cmd-script)
+  :group 'cmd)
 
 
 ;; Font-lock
