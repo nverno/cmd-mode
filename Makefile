@@ -7,8 +7,8 @@ batch = $(emacs) -batch \
 el = $(wildcard *.el)
 elc = $(el:.el=.elc)
 
-auto=../loaddefs.el
-auto_flags= \
+auto ?= loaddefs.el
+auto_flags ?= \
 	--eval "(let ((generated-autoload-file \
                       (expand-file-name (unmsys--file-name \"$@\"))) \
                       (wd (expand-file-name default-directory)) \

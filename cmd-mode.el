@@ -257,38 +257,6 @@ This adds rules for comments and assignments."
        (,unix (1 font-lock-warning-face))))))
 
 
-;; syntax
-
-(defvar cmd-mode-syntax-table
-  (let ((table (make-syntax-table)))
-    ;; Beware: `w' should not be used for non-alphabetic chars.
-    (modify-syntax-entry ?\n ">" table)
-    (modify-syntax-entry ?\" "\"" table)
-    (modify-syntax-entry ?~ "_" table)
-    (modify-syntax-entry ?- "_" table)
-    (modify-syntax-entry ?_ "_" table)
-    (modify-syntax-entry ?# "_" table)
-    (modify-syntax-entry ?\} "_" table)
-    (modify-syntax-entry ?\{ "_" table)
-    (modify-syntax-entry ?\[ "_" table)
-    (modify-syntax-entry ?\] "_" table)
-    (modify-syntax-entry ?\( "()" table)
-    (modify-syntax-entry ?\) ")(" table)
-    ;; escapes, but not in all cases like b/w ""?
-    ;; (modify-syntax-entry ?^ "\\" table)
-    (modify-syntax-entry ?@ "'" table)
-    (modify-syntax-entry ?\\ "." table)
-    (modify-syntax-entry ?% "." table)
-    (modify-syntax-entry ?& "." table)
-    (modify-syntax-entry ?| "." table)
-    (modify-syntax-entry ?> "." table)
-    (modify-syntax-entry ?< "." table)
-    (modify-syntax-entry ?\; "." table)
-    (modify-syntax-entry ?= "." table)
-    (modify-syntax-entry ?, "." table)
-    table))
-
-
 ;; Completion
 
 (defun cmd--ignore-case (lst)
@@ -565,8 +533,41 @@ When the region is active, send the region instead."
     (goto-char end)))
 
 
-;; 5  Main function
+;; ------------------------------------------------------------
+;;* Major Mode
+;; ------------------------------------------------------------
 
+;;* Syntax
+(defvar cmd-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; Beware: `w' should not be used for non-alphabetic chars.
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?~ "_" table)
+    (modify-syntax-entry ?- "_" table)
+    (modify-syntax-entry ?_ "_" table)
+    (modify-syntax-entry ?# "_" table)
+    (modify-syntax-entry ?\} "_" table)
+    (modify-syntax-entry ?\{ "_" table)
+    (modify-syntax-entry ?\[ "_" table)
+    (modify-syntax-entry ?\] "_" table)
+    (modify-syntax-entry ?\( "()" table)
+    (modify-syntax-entry ?\) ")(" table)
+    ;; escapes, but not in all cases like b/w ""?
+    ;; (modify-syntax-entry ?^ "\\" table)
+    (modify-syntax-entry ?@ "'" table)
+    (modify-syntax-entry ?\\ "." table)
+    (modify-syntax-entry ?% "." table)
+    (modify-syntax-entry ?& "." table)
+    (modify-syntax-entry ?| "." table)
+    (modify-syntax-entry ?> "." table)
+    (modify-syntax-entry ?< "." table)
+    (modify-syntax-entry ?\; "." table)
+    (modify-syntax-entry ?= "." table)
+    (modify-syntax-entry ?, "." table)
+    table))
+
+;;* Menu
 (defvar cmd-menu
   '("Cmd"
     ["Compile" cmd-compile :help "Compile (prefix for args)" :keys "<f5>"]
@@ -582,19 +583,20 @@ When the region is active, send the region instead."
     "--"
     ["Template" cmd-template :help "Insert template" :keys "C-c C-t"]))
 
+;;* Map
 (defvar cmd-mode-map
   (let ((map (make-sparse-keymap)))
     (easy-menu-define nil map nil cmd-menu)
-    (define-key map "\C-c?"         'cmd-help)
-    (define-key map (kbd "C-c C-?") 'cmd-help-online)
-    (define-key map "\C-cC-/"       'cmd-help-cmd)
-    (define-key map "\C-c\C-a"      'cmd-run-args)
-    (define-key map "\C-c\C-c"      'cmd-run)
-    (define-key map "\C-c\C-t"      'cmd-template)
-    (define-key map (kbd "<f5>")    'cmd-compile)
-    (define-key map "\C-c\C-z"      'cmd-show-shell)
-    (define-key map "\C-x\C-e"      'cmd-send-line-or-region-and-step)
-    (define-key map "\C-c\C-d"      'cmd-cd-here)
+    (define-key map (kbd "C-c ?")   #'cmd-help)
+    (define-key map (kbd "C-c C-?") #'cmd-help-online)
+    (define-key map (kbd "C-c C-/") #'cmd-help-cmd)
+    (define-key map (kbd "C-c C-a") #'cmd-run-args)
+    (define-key map (kbd "C-c C-c") #'cmd-run)
+    (define-key map (kbd "C-c C-t") #'cmd-template)
+    (define-key map (kbd "<f5>")    #'cmd-compile)
+    (define-key map (kbd "C-c C-z") #'cmd-show-shell)
+    (define-key map (kbd "C-x C-e") #'cmd-send-line-or-region-and-step)
+    (define-key map (kbd "C-c C-d") #'cmd-cd-here)
     map))
 
 (define-abbrev-table 'cmd-mode-abbrev-table ())
