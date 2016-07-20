@@ -1,6 +1,8 @@
 *.elc
 *~
 .#*
-/.cask
-loaddefs.el
 *.html 
+*autoloads.el
+*loaddefs.el
+/.cask
+TAGS
