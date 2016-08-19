@@ -341,7 +341,7 @@ be a variable name, it usually isn't."
        ))))
 
 
-;; Indentation
+;;* Indentation
 
 (require 'smie)
 
@@ -386,7 +386,7 @@ be a variable name, it usually isn't."
 ;; (defvar cmd-delimiters '(?& ?\| ?< ?> ?\( ?\))
 
 
-;; User functions
+;;* User functions
 
 (defun cmd-help-cmd (cmd)
   "Show help for batch file command CMD."
