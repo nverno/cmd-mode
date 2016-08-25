@@ -237,12 +237,19 @@ starts at the end of the first \\(grouping\\)."
     (and (nth 3 sp)
          (cmd-is-quoted-p (nth 8 sp)))))
 
+(defun cmd-syntax-propertize-echo (lim)
+  (while (< (point) lim)
+    (let ((start (point))
+          (_ (skip-chars-forward "^ \t" lim))
+          (end (point)))
+      (put-text-property (point) (1+ (point)) 'syntax-table '(1)))))
+
 (defconst cmd-syntax-propertize
-  (syntax-propertize-rules
-   ("^[ \t]*\\(?:\\(@?r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
-   ;; try to treat keywords after echo as words until something
-   ;; @@FIXME: doesn't work that well
-   ("\\(?:\\<@?echo\\_>\\)\\(?1:[^)(&|><\"\n\r]*\\)" (1 "w"))))
+ (syntax-propertize-rules
+  ("^[ \t]*\\(?:@?\\(r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
+  ;; try to treat keywords after echo as words until something
+  ("\\_<echo\\_>[^[:alpha:]]\\([^(&|><\"\n\r%]+\\)\\(.\\).*"
+   (1 "<") (2 ">"))))
 
 (defun cmd-font-lock-keywords ()
   "Function to get simple fontification for `cmd-font-lock-keywords'.
