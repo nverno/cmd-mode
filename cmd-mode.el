@@ -240,16 +240,22 @@ starts at the end of the first \\(grouping\\)."
 (defun cmd-syntax-propertize-echo (lim)
   (while (< (point) lim)
     (let ((start (point))
-          (_ (skip-chars-forward "^ \t" lim))
+          (_ (skip-chars-forward "^ \t\n\r" lim))
           (end (point)))
-      (put-text-property (point) (1+ (point)) 'syntax-table '(1)))))
+      (put-text-property start end 'syntax-table '(1)))))
 
-(defconst cmd-syntax-propertize
- (syntax-propertize-rules
-  ("^[ \t]*\\(?:@?\\(r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
-  ;; try to treat keywords after echo as words until something
-  ("\\_<echo\\_>[^[:alpha:]]\\([^(&|><\"\n\r%]+\\)\\(.\\).*"
-   (1 "<") (2 ">"))))
+(defun cmd-syntax-propertize-function (start end)
+  (goto-char start)
+  (funcall
+   (syntax-propertize-rules
+    ("^[ \t]*\\(?:@?\\(r\\)em\\_>\\|\\(?1::\\):\\).*" (1 "<"))
+    ;; try to treat keywords after echo as words until something
+    ;; ("\\_<echo\\_>[^[:alpha:]]\\([^(&|><\"\n\r%]+\\).*"
+    ;;  (1 (ignore
+    ;;      (goto-char (match-beginning 1))
+    ;;      (cmd-syntax-propertize-echo (match-end 1)))))
+    )
+   (point) end))
 
 (defun cmd-font-lock-keywords ()
   "Function to get simple fontification for `cmd-font-lock-keywords'.
@@ -628,7 +634,8 @@ Navigate between sections using `imenu'.\n
   (add-hook 'completion-at-point-functions
             #'cmd-completion-at-point-function nil t)
   (setq-local comint-prompt-regexp "^[ \t]*")
-  (setq-local syntax-propertize-function cmd-syntax-propertize)
+  (setq-local syntax-propertize-function
+              #'cmd-syntax-propertize-function)
   (add-hook 'syntax-propertize-extend-region-functions
             #'syntax-propertize-multiline 'append 'local)
   (setq-local font-lock-defaults
