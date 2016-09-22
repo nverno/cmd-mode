@@ -472,10 +472,9 @@ or symbol-at-point will be attempted before requesting input."
   "Run script and output in compilation buffer."
   (interactive "P")
   (save-buffer)
-  (let ((flags (and args
-                    (read-string "Args: ")))
+  (let ((flags (and args (read-from-minibuffer "Args: ")))
         (cmd (concat cmd-compile-file " /C ")))
-    (compile (concat cmd args " " buffer-file-name))))
+    (compile (format "%s %s %s" cmd buffer-file-name (or flags "")))))
 
 
 ;; Inferior shell interaction - from sh-script.el
