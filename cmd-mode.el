@@ -81,7 +81,7 @@
 
 (eval-when-compile
   (require 'comint))
-
+(autoload 'cmd-eldoc-function "cmd-eldoc")
 (autoload 'comint-completion-at-point "comint")
 (autoload 'comint-filename-completion "comint")
 (autoload 'comint-send-string "comint")
@@ -645,7 +645,9 @@ Navigate between sections using `imenu'.\n
   (setq-local outline-regexp ":[^:]")
   (smie-setup cmd-smie-grammar #'cmd-smie-rules
               :forward-token #'cmd-smie--forward-token
-              :backward-token #'cmd-smie--backward-token))
+              :backward-token #'cmd-smie--backward-token)
+
+  (setq-local eldoc-documentation-function 'cmd-eldoc-function))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(bat\\|cmd\\)\\'" . cmd-mode))
