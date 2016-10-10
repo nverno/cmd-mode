@@ -600,6 +600,7 @@ When the region is active, send the region instead."
   (let ((map (make-sparse-keymap)))
     (easy-menu-define nil map nil cmd-menu)
     (define-key map (kbd "C-c ?")   #'cmd-help)
+    (define-key map (kbd "M-?")     #'cmd-help)
     (define-key map (kbd "C-c C-?") #'cmd-help-online)
     (define-key map (kbd "C-c C-/") #'cmd-help-cmd)
     (define-key map (kbd "C-c C-a") #'cmd-run-args)
