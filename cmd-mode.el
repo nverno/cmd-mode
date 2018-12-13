@@ -1,4 +1,4 @@
-;;; cmd-mode.el --- Major mode for editing DOS/Windows scripts
+;;; cmd-mode.el --- Major mode for editing DOS/Windows scripts -*- lexical-binding: t; -*-
 
 ;; Authors: Original: Arni Magnusson <arnima@hafro.is>
 ;;          This extension: Noah Peart <noah.v.peart@gmail.com>
@@ -232,7 +232,7 @@ starts at the end of the first \\(grouping\\)."
   (and (eq (char-before pos) ?^)
        (not (cmd-is-quoted-p (1- pos)))))
 
-(defun cmd-in-quoted-string-p (pos)
+(defun cmd-in-quoted-string-p (_pos)
   (let ((sp (syntax-ppss)))
     (and (nth 3 sp)
          (cmd-is-quoted-p (nth 8 sp)))))
@@ -437,10 +437,9 @@ or symbol-at-point will be attempted before requesting input."
                         (read-string "Help: "))
                    (and (symbol-at-point)
                         (symbol-name (symbol-at-point)))
-                   (read-string "Help: ")))
-          (buff (get-buffer-create "*cmd help*")))
+                   (read-string "Help: "))))
       (with-current-buffer-window
-       "*cmd help*" nil nil
+       (get-buffer-create "*cmd help*") nil nil
        (call-process-shell-command
         (if (string= cmd "net")
             "net /?" (concat "help " cmd)) nil "*cmd help*" 1)

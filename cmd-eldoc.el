@@ -1,4 +1,4 @@
-;;; cmd-eldoc --- eldoc support
+;;; cmd-eldoc --- eldoc support -*- lexical-binding: t; -*-
 
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/cmd-mode
@@ -50,7 +50,7 @@
 
 (defvar cmd-eldoc-buffer "*cmd-eldoc*")
 (defvar cmd-eldoc-current-function)
-(defun cmd-eldoc-sentinel (m p)
+(defun cmd-eldoc-sentinel (_m _p)
   (with-current-buffer cmd-eldoc-buffer
    (goto-char (point-min))
    (forward-line 2)
