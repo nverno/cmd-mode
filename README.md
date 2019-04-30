@@ -62,7 +62,7 @@ ie:
 ```
 as company-backend and `company-quickhelp` for dropdown help.
 
-![example](test-cmd.png)
+![example](ex/test-cmd.png)
 
 
 ---

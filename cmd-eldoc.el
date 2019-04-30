@@ -24,8 +24,14 @@
 ;; Floor, Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;;; Code:
 
+;; Eldoc support for DOS batch scripts.
+;; Will be setup automatically if `eldoc-mode' is active, otherwise enable with
+;;
+;; (add-function :before-until (local 'eldoc-documentation-function)
+;;              #'cmd-eldoc-function)
+;;
+;;; Code:
 (eval-when-compile
   (require 'subr-x))
 
@@ -55,8 +61,7 @@
    (goto-char (point-min))
    (forward-line 2)
    (puthash cmd-eldoc-current-function
-    (buffer-substring-no-properties (line-beginning-position)
-                                    (line-end-position))
+    (buffer-substring-no-properties (line-beginning-position) (line-end-position))
     cmd-eldoc-hash)))
 
 (defun cmd-eldoc-parse-help (func)

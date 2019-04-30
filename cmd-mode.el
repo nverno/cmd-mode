@@ -75,7 +75,7 @@
 ;; ```
 ;; as company-backend and `company-quickhelp' for dropdown help.
 ;;
-;; ![example](test-cmd.png)
+;; ![example](ex/test-cmd.png)
 
 ;;; Code:
 
@@ -617,37 +617,35 @@ When the region is active, send the region instead."
 (define-derived-mode cmd-mode prog-mode "cmd"
   "Major mode for editing DOS/Windows batch files.\n
 Run script using `cmd-compile', `cmd-run' and `cmd-run-args'.
-Start a new script from `cmd-template'.\n
+Start a new script from `cmd-template'.
+
 Read help pages for DOS commands with
 `cmd-help', `cmd-help', or `cmd-help-online'.
-Navigate between sections using `imenu'.\n
+Navigate between sections using `imenu'.
+
 \\{cmd-mode-map}"
   (make-local-variable 'cmd-shell-file)
   (make-local-variable 'cmd-shell)
   (setq-local local-abbrev-table cmd-mode-abbrev-table)
   (setq-local comment-start "rem ")
   (setq-local comment-start-skip "\\(?:::+\\|rem \\)[ \t]*")
-  (setq-local comint-dynamic-complete-functions
-              cmd-dynamic-complete-functions)
+  (setq-local comint-dynamic-complete-functions cmd-dynamic-complete-functions)
   (add-hook 'completion-at-point-functions #'comint-completion-at-point nil t)
-  (add-hook 'completion-at-point-functions
-            #'cmd-completion-at-point-function nil t)
+  (add-hook 'completion-at-point-functions #'cmd-completion-at-point-function nil t)
   (setq-local comint-prompt-regexp "^[ \t]*")
-  (setq-local syntax-propertize-function
-              #'cmd-syntax-propertize-function)
+  (setq-local syntax-propertize-function #'cmd-syntax-propertize-function)
   (add-hook 'syntax-propertize-extend-region-functions
             #'syntax-propertize-multiline 'append 'local)
-  (setq-local font-lock-defaults
-              `((cmd-font-lock-keywords)
-                nil t)) ; case-insensitive keywords
+  (setq font-lock-defaults `((cmd-font-lock-keywords) nil t)) ; case-insensitive
   (setq-local imenu-generic-expression '((nil "^:[^:].*" 0)))
   (setq-local imenu-case-fold-search t)
   (setq-local outline-regexp ":[^:]")
   (smie-setup cmd-smie-grammar #'cmd-smie-rules
               :forward-token #'cmd-smie--forward-token
               :backward-token #'cmd-smie--backward-token)
-
-  (setq-local eldoc-documentation-function 'cmd-eldoc-function))
+  (when eldoc-mode
+    (add-function :before-until (local 'eldoc-documentation-function)
+                  #'cmd-eldoc-function)))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.\\(bat\\|cmd\\)\\'" . cmd-mode))
